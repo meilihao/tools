@@ -21,7 +21,7 @@ func main() {
 	fname := flag.String("c", "xxx.json", "path to a Postman Collection")
 	flag.Parse()
 
-	data, err := ioutil.ReadFile(fname)
+	data, err := ioutil.ReadFile(*fname)
 	CheckErr(err)
 
 	ps := new(Collection)
