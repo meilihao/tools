@@ -20,7 +20,7 @@ type Properties struct {
 type Region struct {
 	Provider string `json:"provider"`
 	Name     string `json:"name"`
-	ID       string `json:"id"`
+	Region   string `json:"region"`
 	Endpoint string `json:"endpoint"`
 	//IEndpoint  string
 	Properties Properties `json:"properties"`
@@ -73,7 +73,7 @@ func AliyunOSS() []*Region {
 			case 0:
 				tmp.Name = strings.TrimSpace(td.Text())
 			case 1:
-				tmp.ID = strings.TrimSpace(td.Text())
+				tmp.Region = strings.TrimSpace(td.Text())
 			case 2:
 				tmp.Properties.SupportIpv6 = strings.TrimSpace(td.Text()) == "是"
 			case 3:
@@ -94,7 +94,7 @@ func AliyunOSS() []*Region {
 		&Region{ // 不支持内网Endpoint
 			Provider: "aliyun",
 			Name:     "全球加速Endpoint",
-			ID:       "oss-accelerate",
+			Region:   "oss-accelerate",
 			Endpoint: "oss-accelerate.aliyuncs.com",
 			Properties: Properties{
 				SupportAccelerate: true,
@@ -103,7 +103,7 @@ func AliyunOSS() []*Region {
 		&Region{ // 不支持内网Endpoint
 			Provider: "aliyun",
 			Name:     "非中国内地加速Endpoint",
-			ID:       "oss-accelerate-overseas",
+			Region:   "oss-accelerate-overseas",
 			Endpoint: "oss-accelerate-overseas.aliyuncs.com",
 			Properties: Properties{
 				SupportAccelerate: true,
@@ -150,7 +150,7 @@ func TencentCOS() []*Region {
 			case 0:
 				tmp.Name = strings.TrimSpace(td.Text())
 			case 1:
-				tmp.ID = strings.TrimSpace(td.Text())
+				tmp.Region = strings.TrimSpace(td.Text())
 			case 2:
 				tmp.Endpoint = strings.TrimSpace(td.Text())
 			}
@@ -160,7 +160,7 @@ func TencentCOS() []*Region {
 			return
 		}
 
-		if strings.HasSuffix(tmp.ID, "-fsi") { // 排除金融云
+		if strings.HasSuffix(tmp.Region, "-fsi") { // 排除金融云
 			return
 		}
 
@@ -173,7 +173,7 @@ func TencentCOS() []*Region {
 		&Region{ // 不支持内网Endpoint
 			Provider: "tencentcloud",
 			Name:     "全球加速域名",
-			ID:       "accelerate",
+			Region:   "accelerate",
 			Endpoint: "cos.accelerate.myqcloud.com",
 			Properties: Properties{
 				SupportAccelerate: true,
@@ -218,7 +218,7 @@ func HuaweiOBS() []*Region {
 				case 0:
 					tmp.Name = strings.TrimSpace(td.Text())
 				case 1:
-					tmp.ID = strings.TrimSpace(td.Text())
+					tmp.Region = strings.TrimSpace(td.Text())
 				case 2:
 					tmp.Endpoint = strings.TrimSpace(td.Text())
 				}
