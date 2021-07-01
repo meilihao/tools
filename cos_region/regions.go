@@ -11,10 +11,10 @@ import (
 )
 
 type Properties struct {
-	SupportInternal   bool   `json:"support_internal"` // for aliyun
-	SupportIpv6       bool   `json:"support_ipv6"`
-	SupportAccelerate bool   `json:"support_accelerate"` // 加速, support: aliyun, tencentcloud
-	AppID             string `json:"app_id"`             // 腾讯cos主账号
+	SupportInternal   bool `json:"support_internal"` // for aliyun
+	SupportIpv6       bool `json:"support_ipv6"`
+	SupportAccelerate bool `json:"support_accelerate"` // 加速, support: aliyun, tencentcloud
+	NeedAppID         bool `json:"need_appid"`         // 主账号 only for 腾讯cos
 }
 
 type Region struct {
@@ -165,6 +165,7 @@ func TencentCOS() []*Region {
 		}
 
 		tmp.Endpoint = strings.TrimPrefix(tmp.Endpoint, "<BucketName-APPID>.")
+		tmp.Properties.NeedAppID = true
 
 		ls = append(ls, tmp)
 	})
@@ -177,6 +178,7 @@ func TencentCOS() []*Region {
 			Endpoint: "cos.accelerate.myqcloud.com",
 			Properties: Properties{
 				SupportAccelerate: true,
+				NeedAppID:         true,
 			},
 		})
 
