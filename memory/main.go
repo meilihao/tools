@@ -121,6 +121,7 @@ func GetPsInfo(ls *[]string) {
 		// 	fmt.Println(p.Cmdline())
 		// }
 
+		// mstat.RSS include so, 未均摊
 		i.Total += Uint64ToMB(mstat.RSS)
 		if strings.HasPrefix(cmdline, "python") {
 			i.Python += Uint64ToMB(mstat.RSS)
