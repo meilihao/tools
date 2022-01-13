@@ -66,8 +66,10 @@ func rootRun(cmd *cobra.Command, args []string) {
 			"swapTotal",
 			"swapUsed",
 			"swapFree",
+			"tmp",
 		})
 	}
+	w.Flush()
 
 	var now time.Time
 	for {
@@ -77,6 +79,7 @@ func rootRun(cmd *cobra.Command, args []string) {
 
 		GetPsInfo(&ls)
 		GetMemInfo(&ls)
+		GetTmp(&ls)
 
 		w.Write(ls)
 		w.Flush()
@@ -236,6 +239,25 @@ func GetMemInfo(ls *[]string) {
 
 // 	i.BuffersCache = i.Buffers + i.Cache
 // }
+
+func GetTmp(ls *[]string) {
+	var n uint64
+	defer func() {
+		*ls = append(*ls,
+			fmt.Sprintf("%d", n),
+		)
+	}()
+
+	out, err := CmdExec("du", []string{"-s", "-m", "/tmp"}) // tmpfs
+	if err != nil {
+		log.Println(err)
+
+		return
+	}
+
+	out = strings.TrimSuffix(out, "/tmp")
+	n = ParseStrToUint64(strings.TrimSpace(out))
+}
 
 func ParseStrToUint64(s string) uint64 {
 	n, err := strconv.ParseUint(s, 10, 64)
