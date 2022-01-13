@@ -73,7 +73,7 @@ func rootRun(cmd *cobra.Command, args []string) {
 	for {
 		now = time.Now()
 		var ls []string
-		ls = append(ls, now.Format("2009-01-02 15:04:04"))
+		ls = append(ls, now.Format("2006-01-02 15:04:05"))
 
 		GetPsInfo(&ls)
 		GetMemInfo(&ls)
@@ -110,6 +110,14 @@ func GetPsInfo(ls *[]string) {
 
 	for _, p := range ps {
 		mstat, err := p.MemoryInfo()
+		if mstat == nil { // maybe get nil
+			fmt.Println(err)
+			fmt.Println(p.Cmdline())
+			continue
+		}
+		if mstat.RSS == 0 {
+			continue
+		}
 		CheckErr(err)
 		cmdline, err := p.Cmdline()
 		CheckErr(err)
@@ -121,6 +129,7 @@ func GetPsInfo(ls *[]string) {
 		// 	fmt.Println(p.Cmdline())
 		// }
 
+		// mstat.RSS include so, 未均摊
 		i.Total += Uint64ToMB(mstat.RSS)
 		if strings.HasPrefix(cmdline, "python") {
 			i.Python += Uint64ToMB(mstat.RSS)
