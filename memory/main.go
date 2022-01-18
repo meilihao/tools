@@ -23,6 +23,13 @@ var (
 	Interval   int64
 )
 
+var (
+	curveCmd = &cobra.Command{
+		Use:  "curve",
+		RunE: PrintCurve2,
+	}
+)
+
 func main() {
 	rootCmd := &cobra.Command{
 		Use: "mem",
@@ -31,6 +38,9 @@ func main() {
 
 	rootCmd.PersistentFlags().StringVarP(&OutputFile, "output", "o", "mem.csv", "result output")
 	rootCmd.PersistentFlags().Int64VarP(&Interval, "interval", "n", 1, "sample interval")
+
+	rootCmd.AddCommand(curveCmd)
+
 	rootCmd.Execute()
 }
 
@@ -177,7 +187,7 @@ func GetMemInfo(ls *[]string) {
 
 	out, err := CmdExec("free", []string{"-m", "-w"})
 	if err != nil {
-		log.Println(err)
+		log.Println("free", err)
 
 		return
 	}
@@ -248,9 +258,9 @@ func GetTmp(ls *[]string) {
 		)
 	}()
 
-	out, err := CmdExec("du", []string{"-s", "-m", "/tmp"}) // tmpfs
+	out, err := CmdExec("du", []string{"-s", "-m", "/tmp"}) // tmpfs , need root
 	if err != nil {
-		log.Println(err)
+		log.Println("du", err)
 
 		return
 	}
@@ -272,6 +282,7 @@ func Uint64ToMB(n uint64) uint64 {
 
 func CmdExec(name string, args []string) (output string, err error) {
 	cmd := exec.Command(name, args...)
+	cmd.Env = append(os.Environ(), "LANG=C")
 
 	stdoutStderr, err := cmd.CombinedOutput()
 	if err != nil {
